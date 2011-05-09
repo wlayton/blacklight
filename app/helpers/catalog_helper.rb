@@ -4,15 +4,21 @@ module CatalogHelper
   	#
   	def format_num(num); number_with_delimiter(num) end
 
-  	#
-  	# Displays the "showing X through Y of N" message. Not sure
-    # why that's called "page_entries_info". Not entirely sure
-    # what collection argument is supposed to duck-type too, but
-    # an RSolr::Ext::Response works.  Perhaps it duck-types to something
-    # from will_paginate?
+    # An over-ridden method from will_paginate, to display our  	  
+  	# "showing X through Y of N" message how we want. 
+  	# 
+  	# This is a terrible idea, hijacking will_paginate in the entire
+  	# app like this, even if the app wants to use it for something
+  	# other than RSolr. Oh well. 
+    #
+    # Collection argument duck-types to something from will_paginate
+    # I guess, an RSolr::Ext::Response works.     
   	def page_entries_info(collection, options = {})
       start = (collection.current_page - 1) * collection.per_page + 1
-      total_hits = @response.total
+      # actual WillPaginate::Collection's have #total_entries. RSolr::Ext::Response
+      # has #total instead. We want this to work for both, to do what we want
+      # for RSolr, but not break WillPaginate's usual use. 
+      total_hits = collection.respond_to?(:total_entries) ? collection.total_entries : collection.total
       start_num = format_num(start)
       end_num = format_num(start + collection.size - 1)
       total_num = format_num(total_hits)
