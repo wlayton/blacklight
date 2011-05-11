@@ -63,7 +63,7 @@ def record1_xml
      <datafield tag=\"260\" ind1=\" \" ind2=\" \">
        <subfield code=\"a\">London :</subfield>
        <subfield code=\"b\">Batsford,</subfield>
-       <subfield code=\"c\">1988.</subfield>
+       <subfield code=\"c\">1988-2000</subfield>
      </datafield>
 
      <datafield tag=\"700\" ind1=\"1\" ind2=\" \">

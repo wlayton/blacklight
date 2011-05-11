@@ -279,10 +279,20 @@ module Blacklight::Solr::Document::MarcExport
     end
     title = ""
     additional_title = ""
+    section_title = ""
     if marc["245"] and (marc["245"]["a"] or marc["245"]["b"])
       title << citation_title(clean_end_punctuation(marc["245"]["a"]).strip) if marc["245"]["a"]
       title << ": #{citation_title(clean_end_punctuation(marc["245"]["b"]).strip)}" if marc["245"]["b"]
     end
+    if marc["245"] and (marc["245"]["n"] or marc["245"]["p"])
+      section_title << clean_end_punctuation(marc["245"]["n"]) if marc["245"]["n"]
+      if marc["245"]["p"]
+        section_title << ", <i>#{clean_end_punctuation(marc["245"]["p"])}.</i>"
+      elsif marc["245"]["n"]
+        section_title << "."
+      end
+    end
+    
     if !authors[:primary_authors].blank? and (!authors[:translators].blank? or !authors[:editors].blank? or !authors[:compilers].blank?)
         additional_title << "Translated by #{authors[:translators].collect{|name| name_reverse(name)}.join(" and ")}. " unless authors[:translators].blank?
         additional_title << "Edited by #{authors[:editors].collect{|name| name_reverse(name)}.join(" and ")}. " unless authors[:editors].blank?
@@ -305,6 +315,7 @@ module Blacklight::Solr::Document::MarcExport
     citation = ""
     citation << "#{author_text} " unless author_text.blank?
     citation << "<i>#{title}.</i> " unless title.blank?
+    citation << "#{section_title} " unless section_title.blank?
     citation << "#{additional_title} " unless additional_title.blank?
     citation << "#{edition} " unless edition.blank?
     citation << "#{pub_info}." unless pub_info.blank?
@@ -413,11 +424,11 @@ module Blacklight::Solr::Document::MarcExport
     if !record.find{|f| f.tag == '260'}.nil?
       pub_date = record.find{|f| f.tag == '260'}
       if pub_date.find{|s| s.code == 'c'}
-        date_value = pub_date.find{|s| s.code == 'c'}.value.gsub(/[^0-9]/, "") unless pub_date.find{|s| s.code == 'c'}.value.gsub(/[^0-9]/, "").blank?
+        date_value = pub_date.find{|s| s.code == 'c'}.value.gsub(/[^0-9|n\.d\.]/, "")[0,4] unless pub_date.find{|s| s.code == 'c'}.value.gsub(/[^0-9|n\.d\.]/, "")[0,4].blank?
       end
-      return nil unless !date_value.nil?
+      return nil if date_value.nil?
     end
-    date_value
+    clean_end_punctuation(date_value) if date_value
   end
   def setup_pub_info(record)
     text = ''

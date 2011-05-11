@@ -168,6 +168,83 @@ def record2_xml
 </record>"
 end
 
+def year_range_xml
+  "<record>
+     <leader>01021cam a2200277 a 4500</leader>
+     <controlfield tag=\"001\">a1711966</controlfield>
+     <controlfield tag=\"003\">SIRSI</controlfield>
+     <controlfield tag=\"008\">890421s1988    enka          001 0 eng d</controlfield>
+
+     <datafield tag=\"100\" ind1=\"1\" ind2=\" \">
+       <subfield code=\"a\">Schmoe, Joe</subfield>
+     </datafield>
+
+     <datafield tag=\"245\" ind1=\"1\" ind2=\"4\">
+       <subfield code=\"a\">Main title /</subfield>
+       <subfield code=\"c\">Subtitle</subfield>
+     </datafield>
+
+     <datafield tag=\"260\" ind1=\" \" ind2=\" \">
+       <subfield code=\"a\">London :</subfield>
+       <subfield code=\"b\">Batsford,</subfield>
+       <subfield code=\"c\">1988-2000</subfield>
+     </datafield>
+     
+  </record>"
+end
+
+def no_date_xml
+  "<record>
+     <leader>01021cam a2200277 a 4500</leader>
+     <controlfield tag=\"001\">a1711966</controlfield>
+     <controlfield tag=\"003\">SIRSI</controlfield>
+     <controlfield tag=\"008\">890421s1988    enka          001 0 eng d</controlfield>
+
+     <datafield tag=\"100\" ind1=\"1\" ind2=\" \">
+       <subfield code=\"a\">Schmoe, Joe</subfield>
+     </datafield>
+
+     <datafield tag=\"245\" ind1=\"1\" ind2=\"4\">
+       <subfield code=\"a\">Main title /</subfield>
+       <subfield code=\"c\">Subtitle</subfield>
+     </datafield>
+
+     <datafield tag=\"260\" ind1=\" \" ind2=\" \">
+       <subfield code=\"a\">London :</subfield>
+       <subfield code=\"b\">Batsford,</subfield>
+       <subfield code=\"c\">n.d.</subfield>
+     </datafield>
+     
+  </record>"
+end
+
+def section_title_xml
+  "<record>
+     <leader>01021cam a2200277 a 4500</leader>
+     <controlfield tag=\"001\">a1711966</controlfield>
+     <controlfield tag=\"003\">SIRSI</controlfield>
+     <controlfield tag=\"008\">890421s1988    enka          001 0 eng d</controlfield>
+
+     <datafield tag=\"100\" ind1=\"1\" ind2=\" \">
+       <subfield code=\"a\">Schmoe, Joe</subfield>
+     </datafield>
+
+     <datafield tag=\"245\" ind1=\"1\" ind2=\"4\">
+       <subfield code=\"a\">Main title /</subfield>
+       <subfield code=\"b\">Subtitle</subfield>
+       <subfield code=\"n\">Number of part.</subfield>
+       <subfield code=\"p\">Name of part.</subfield>
+     </datafield>
+
+     <datafield tag=\"260\" ind1=\" \" ind2=\" \">
+       <subfield code=\"a\">London :</subfield>
+       <subfield code=\"b\">Batsford,</subfield>
+       <subfield code=\"c\">2001</subfield>
+     </datafield>
+     
+  </record>"
+end
+
 def dissertation_note_xml
 "<record>
   <leader>00903nam a2200253   4500</leader>
@@ -426,10 +503,13 @@ describe Blacklight::Solr::Document::MarcExport do
     @three_authors_record               = dclass.new( three_authors_xml )
     @record_without_authors             = dclass.new( record2_xml )
     @record_with_10plus_authors         = dclass.new( record3_xml )
+    @year_range_record                  = dclass.new( year_range_xml )
+    @no_date_record                     = dclass.new( no_date_xml )
+    @section_title_record               = dclass.new( section_title_xml )
     @special_contributor_record         = dclass.new( special_contributor_with_author_xml )
     @record_without_citable_data        = dclass.new( no_good_data_xml )
     @special_contributor_no_auth_record = dclass.new( special_contributor_no_author_xml )
-    @record_utf8_decomposed = dclass.new( utf8_decomposed_record_xml )
+    @record_utf8_decomposed             = dclass.new( utf8_decomposed_record_xml )
 
   end
   
@@ -460,6 +540,15 @@ describe Blacklight::Solr::Document::MarcExport do
     end
     it "should handle editors, translators, and compilers correctly when there is no author present" do
       @special_contributor_no_auth_record.export_as_chicago_citation_txt.should == "Schmoe, Joe trans., Bill Schmoe ed., and Susie Schmoe comp. <i>Title of Item.</i> Publisher: Place, 2009."
+    end
+    it "should handle year ranges properly" do
+      @year_range_record.export_as_chicago_citation_txt.should_not match(/2000/)
+    end
+    it "should handle n.d. in the 260$c properly" do
+      @no_date_record.export_as_chicago_citation_txt.should match(/n\.d\.$/)
+    end
+    it "should handle section title appropriately" do
+      @section_title_record.export_as_chicago_citation_txt.should == "Schmoe, Joe <i>Main Title: Subtitle\.<\/i> Number of part, <i>Name of part\.<\/i> London: Batsford, 2001."
     end
     it "should not fail if there is no citation data" do
       @record_without_citable_data.export_as_chicago_citation_txt.should == ""
