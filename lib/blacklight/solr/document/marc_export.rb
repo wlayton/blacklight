@@ -214,6 +214,8 @@ module Blacklight::Solr::Document::MarcExport
 
   protected
   
+  # Main method for defining chicago style citation.  If we don't end up converting to using a citation formatting service
+  # we should make this receive a semantic document and not MARC so we can use this with other formats.
   def chicago_citation(marc)
     authors = get_all_authors(marc)    
     author_text = ""
