@@ -548,7 +548,7 @@ describe Blacklight::Solr::Document::MarcExport do
       @no_date_record.export_as_chicago_citation_txt.should match(/n\.d\.$/)
     end
     it "should handle section title appropriately" do
-      @section_title_record.export_as_chicago_citation_txt.should == "Schmoe, Joe <i>Main Title: Subtitle\.<\/i> Number of part, <i>Name of part\.<\/i> London: Batsford, 2001."
+      @section_title_record.export_as_chicago_citation_txt.should == "Schmoe, Joe <i>Main Title: Subtitle\.<\/i> Number of Part, <i>Name of Part\.<\/i> London: Batsford, 2001."
     end
     it "should not fail if there is no citation data" do
       @record_without_citable_data.export_as_chicago_citation_txt.should == ""

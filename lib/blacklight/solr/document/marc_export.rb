@@ -222,7 +222,12 @@ module Blacklight::Solr::Document::MarcExport
         authors[:primary_authors].each_with_index do |author,index|
           if index < 7
             if index == 0
-              author_text << "#{author}, "
+              author_text << "#{author}"
+              if author.ends_with?(",")
+                author_text << " "
+              else
+                author_text << ", "
+              end
             else
               author_text << "#{name_reverse(author)}, "
             end
@@ -232,7 +237,12 @@ module Blacklight::Solr::Document::MarcExport
       elsif authors[:primary_authors].length > 1
         authors[:primary_authors].each_with_index do |author,index|
           if index == 0
-            author_text << "#{author}, "
+            author_text << "#{author}"
+            if author.ends_with?(",")
+              author_text << " "
+            else
+              author_text << ", "
+            end
           elsif index + 1 == authors[:primary_authors].length
             author_text << "and #{name_reverse(author)}."
           else
@@ -285,9 +295,9 @@ module Blacklight::Solr::Document::MarcExport
       title << ": #{citation_title(clean_end_punctuation(marc["245"]["b"]).strip)}" if marc["245"]["b"]
     end
     if marc["245"] and (marc["245"]["n"] or marc["245"]["p"])
-      section_title << clean_end_punctuation(marc["245"]["n"]) if marc["245"]["n"]
+      section_title << citation_title(clean_end_punctuation(marc["245"]["n"])) if marc["245"]["n"]
       if marc["245"]["p"]
-        section_title << ", <i>#{clean_end_punctuation(marc["245"]["p"])}.</i>"
+        section_title << ", <i>#{citation_title(clean_end_punctuation(marc["245"]["p"]))}.</i>"
       elsif marc["245"]["n"]
         section_title << "."
       end
@@ -312,6 +322,7 @@ module Blacklight::Solr::Document::MarcExport
     elsif marc["502"] and (marc["502"]["b"] or marc["502"]["c"] or marc["502"]["d"]) #sometimes the dissertation note is encoded in pieces in the $b $c and $d sub fields instead of lumped into the $a
       pub_info << "#{marc["502"]["b"]}, #{marc["502"]["c"]}, #{clean_end_punctuation(marc["502"]["d"])}"
     end
+    
     citation = ""
     citation << "#{author_text} " unless author_text.blank?
     citation << "<i>#{title}.</i> " unless title.blank?
