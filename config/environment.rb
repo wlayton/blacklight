@@ -71,7 +71,7 @@ Rails::Initializer.run do |config|
   # list test dependencies here...
   #
   
-  config.gem 'rails', :version=>'2.3.5'
+  config.gem 'rails', :version=>'2.3.11'
 
   #unicode is used by refworks export to force C form normalization, which
   #refworks wants.
@@ -99,7 +99,7 @@ Rails::Initializer.run do |config|
   config.gem 'haml', :version=>'2.2.19'
   
   # hanna is only needed for generating rdocs
-  config.gem 'hanna', :lib=>'hanna/rdoctask', :source=>'http://gemcutter.org', :version=>'0.1.12'
+  #config.gem 'hanna', :lib=>'hanna/rdoctask', :source=>'http://gemcutter.org', :version=>'0.1.12'
   
   # got this idea from Rails' Initializer#load_environment()
   # it's reading the file and evaluating it in the context of this code

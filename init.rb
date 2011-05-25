@@ -4,7 +4,7 @@
 #   - this will prevent users from having to install testing gems
 #
 
-config.gem "rails", :version=>'2.3.5'
+config.gem "rails", :version=>'2.3.11'
 
 config.gem "authlogic", :version=>'2.1.2'
 
