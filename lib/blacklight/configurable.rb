@@ -48,6 +48,11 @@ module Blacklight::Configurable
     end
   end
 
+  #simply a convenience method for blacklight_config.configure
+  def configure_blacklight(*args, &block)
+    blacklight_config.configure(*args, &block)
+  end
+
   def self.default_configuration
       @default_configuration ||= Blacklight::Configuration.new
   end

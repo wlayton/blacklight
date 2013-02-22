@@ -4,19 +4,19 @@ require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 describe "catalog/index" do  
 
   before(:all) do
-    @config = Blacklight::Configuration.new.configure do |config|
+    
+    @params = { 'content_format' => 'marc', :f => { :format => ['Book'] }, :page => 2 }
+
+    # run a solr query to get our data
+    @c = CatalogController.new
+    @c.blacklight_service = Blacklight::Service.new do |config|
       config.default_solr_params = {
         :fl => '*',
         :rows => 10
       }
     end
-    
-    @params = { 'content_format' => 'marc', :f => { :format => ['Book'] }, :page => 2 }
 
-    # run a solr query to get our data
-    c = CatalogController.new
-    c.blacklight_config = @config
-    @response, @document_list = c.get_search_results(@params)
+    @response, @document_list = @c.get_search_results(@params)
 
     # munge the solr response to match test expectations
     @document_list[1] = SolrDocument.new(@document_list[1].with_indifferent_access.reject! { |k,v| k == "author_display" })
@@ -30,7 +30,7 @@ describe "catalog/index" do
     # but okay. 
 
     params.merge!( @params )
-    view.stub!(:blacklight_config).and_return(@config)
+    view.stub!(:blacklight_config).and_return(@c.blacklight_config)
     view.stub!(:search_field_options_for_select).and_return([])
 
     render :template => 'catalog/index', :formats => [:atom] 

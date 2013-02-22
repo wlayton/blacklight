@@ -1,9 +1,7 @@
 # -*- encoding : utf-8 -*-
 module Blacklight::Catalog   
   extend ActiveSupport::Concern
-  
-  include Blacklight::Configurable
-  include Blacklight::SolrHelper
+  include Blacklight::ServiceControllerShim
   
   SearchHistoryWindow = 12 # how many searches to save in session history
 
@@ -305,11 +303,4 @@ module Blacklight::Catalog
       end
     end
 
-    def blacklight_solr
-      @solr ||=  RSolr.connect(blacklight_solr_config)
-    end
-
-    def blacklight_solr_config
-      Blacklight.solr_config
-    end
 end

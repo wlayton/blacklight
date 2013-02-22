@@ -26,6 +26,9 @@ module Blacklight
   autoload :OpenStructWithHashAccess, 'blacklight/utils'
   autoload :SolrResponse, 'blacklight/solr_response'
 
+  autoload :Service, 'blacklight/service'
+  autoload :ServiceControllerShim, 'blacklight/service_controller_shim'
+
   extend SearchFields
   
   require 'blacklight/version'

@@ -1,7 +1,8 @@
 # -*- encoding : utf-8 -*-
 class SavedSearchesController < ApplicationController
-  include Blacklight::Configurable
 
+  include Blacklight::ServiceControllerShim
+  
   copy_blacklight_config_from(CatalogController)
   before_filter :require_user_authentication_provider
   before_filter :verify_user 
