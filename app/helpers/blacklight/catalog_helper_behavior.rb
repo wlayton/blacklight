@@ -88,15 +88,6 @@ module Blacklight::CatalogHelperBehavior
   end
 
   ##
-  # Export to Refworks URL
-  # 
-  # @param [SolrDocument]
-  # @return [String]
-  def refworks_export_url(document = @document)
-    "http://www.refworks.com/express/expressimport.asp?vendor=#{CGI.escape(application_name)}&filter=MARC%20Format&encoding=65001&url=#{CGI.escape(polymorphic_path(document, :format => 'refworks_marc_txt', :only_path => false))}"
-  end
-
-  ##
   # Get the classes to add to a document's div
   # 
   # @return [String]
