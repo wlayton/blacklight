@@ -1,4 +1,4 @@
-source 'http://rubygems.org'
+source 'https://rubygems.org'
 
 file = File.expand_path("../../Gemfile", __FILE__)
 if File.exists?(file)

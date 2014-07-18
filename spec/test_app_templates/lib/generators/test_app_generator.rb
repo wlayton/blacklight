@@ -19,6 +19,9 @@ class TestAppGenerator < Rails::Generators::Base
     say_status("warning", "GENERATING BL", :yellow)       
     gem 'blacklight-marc', "~> 5.0", :github => 'projectblacklight/blacklight_marc'
 
+    # Temporary fix for https://github.com/twbs/bootstrap-sass/issues/647 on Rails 3
+    gem 'bootstrap-sass', github: 'twbs/bootstrap-sass', ref: '540ad23'
+
     Bundler.with_clean_env do
       run "bundle install"
     end
