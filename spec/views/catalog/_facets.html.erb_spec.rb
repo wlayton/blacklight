@@ -37,14 +37,14 @@ describe "catalog/_facets" do
     it "should have a header" do
       allow(view).to receive_messages(:render_facet_partials => '')
       render
-      expect(rendered).to have_selector('h4')
+      expect(rendered).to have_selector('h2')
     end
 
 
     describe "facet display" do
       it "should have a(n accessible) header" do
         render
-        expect(rendered).to have_selector('h5')
+        expect(rendered).to have_selector('h3')
       end
 
       it "should list values" do
